@@ -54,8 +54,8 @@ type
     value*: uint64T
     variantKind*: uint64T
 
+## The operand VariantKinds for symbolic disassembly.
 const
-  ## The operand VariantKinds for symbolic disassembly.
   LLVMDisassemblerVariantKindNone* = 0
 
   ## The ARM target VariantKinds.
@@ -70,55 +70,40 @@ const
   LLVMDisassemblerVariantKindARM64TLVP* = 5
   LLVMDisassemblerVariantKindARM64TLVOFF* = 6
 
-## *
-##  The type for the symbol lookup function.  This may be called by the
-##  disassembler for things like adding a comment for a PC plus a constant
-##  offset load instruction to use a symbol name instead of a load address value.
-##  It is passed the block information is saved when the disassembler context is
-##  created and the ReferenceValue to look up as a symbol.  If no symbol is found
-##  for the ReferenceValue NULL is returned.  The ReferenceType of the
-##  instruction is passed indirectly as is the PC of the instruction in
-##  ReferencePC.  If the output reference can be determined its type is returned
-##  indirectly in ReferenceType along with ReferenceName if any, or that is set
-##  to NULL.
-##
-
 type
+  ## The type for the symbol lookup function.  This may be called by the
+  ## disassembler for things like adding a comment for a PC plus a constant
+  ## offset load instruction to use a symbol name instead of a load address value.
+  ## It is passed the block information is saved when the disassembler context is
+  ## created and the ReferenceValue to look up as a symbol.  If no symbol is found
+  ## for the ReferenceValue NULL is returned.  The ReferenceType of the
+  ## instruction is passed indirectly as is the PC of the instruction in
+  ## ReferencePC.  If the output reference can be determined its type is returned
+  ## indirectly in ReferenceType along with ReferenceName if any, or that is set
+  ## to NULL.
   LLVMSymbolLookupCallback* = proc (disInfo: pointer; referenceValue: uint64T;
                                  referenceType: ptr uint64T; referencePC: uint64T;
                                  referenceName: cstringArray): cstring
 
-## *
-##  The reference types on input and output.
-##
-##  No input reference type or no output reference type.
+## The reference types on input and output.
 
 const
+  ## No input reference type or no output reference type.
   LLVMDisassemblerReferenceTypeInOutNone* = 0
 
-##  The input reference is from a branch instruction.
-
-const
+  ## The input reference is from a branch instruction.
   LLVMDisassemblerReferenceTypeInBranch* = 1
 
-##  The input reference is from a PC relative load instruction.
-
-const
+  ## The input reference is from a PC relative load instruction.
   LLVMDisassemblerReferenceTypeInPCrelLoad* = 2
 
-##  The input reference is from an ARM64::ADRP instruction.
-
-const
+  ## The input reference is from an ARM64::ADRP instruction.
   LLVMDisassemblerReferenceTypeInARM64ADRP* = 0x0000000100000001'i64
 
-##  The input reference is from an ARM64::ADDXri instruction.
-
-const
+  ## The input reference is from an ARM64::ADDXri instruction.
   LLVMDisassemblerReferenceTypeInARM64ADDXri* = 0x0000000100000002'i64
 
-##  The input reference is from an ARM64::LDRXui instruction.
-
-const
+  ## The input reference is from an ARM64::LDRXui instruction.
   LLVMDisassemblerReferenceTypeInARM64LDRXui* = 0x0000000100000003'i64
 
 ##  The input reference is from an ARM64::LDRXl instruction.

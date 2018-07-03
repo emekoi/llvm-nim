@@ -10,10 +10,7 @@ proc LLVMWriteBitcodeToFD*(m: LLVMModuleRef; fd: cint; shouldClose: cint;
 ## Writes a module to an open file descriptor.
 ## Returns 0 on success. Closes the Handle.
 proc LLVMWriteBitcodeToFileHandle*(m: LLVMModuleRef; handle: cint): cint
+                                  {.deprecated: "use LLVMWriteBitcodeToFD".}
 
 ## Writes a module to a new memory buffer and returns it.
 proc LLVMWriteBitcodeToMemoryBuffer*(m: LLVMModuleRef): LLVMMemoryBufferRef
-
-{.deprecated: [
-  LLVMWriteBitcodeToFileHandle: LLVMWriteBitcodeToFD,
-].}
