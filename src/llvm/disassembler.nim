@@ -1,8 +1,6 @@
 # import
 #   llvm/Support/DataTypes
 
-
-
 type
   ## An opaque reference to a disassembler context.
   LLVMDisasmContextRef* = pointer
@@ -86,7 +84,6 @@ type
                                  referenceName: cstringArray): cstring
 
 ## The reference types on input and output.
-
 const
   ## No input reference type or no output reference type.
   LLVMDisassemblerReferenceTypeInOutNone* = 0
@@ -106,134 +103,93 @@ const
   ## The input reference is from an ARM64::LDRXui instruction.
   LLVMDisassemblerReferenceTypeInARM64LDRXui* = 0x0000000100000003'i64
 
-##  The input reference is from an ARM64::LDRXl instruction.
-
-const
+  ##  The input reference is from an ARM64::LDRXl instruction.
   LLVMDisassemblerReferenceTypeInARM64LDRXl* = 0x0000000100000004'i64
 
-##  The input reference is from an ARM64::ADR instruction.
-
-const
+  ##  The input reference is from an ARM64::ADR instruction.
   LLVMDisassemblerReferenceTypeInARM64ADR* = 0x0000000100000005'i64
 
-##  The output reference is to as symbol stub.
-
-const
+  ##  The output reference is to as symbol stub.
   LLVMDisassemblerReferenceTypeOutSymbolStub* = 1
 
-##  The output reference is to a symbol address in a literal pool.
-
-const
+  ##  The output reference is to a symbol address in a literal pool.
   LLVMDisassemblerReferenceTypeOutLitPoolSymAddr* = 2
 
-##  The output reference is to a cstring address in a literal pool.
-
-const
+  ##  The output reference is to a cstring address in a literal pool.
   LLVMDisassemblerReferenceTypeOutLitPoolCstrAddr* = 3
 
-##  The output reference is to a Objective-C CoreFoundation string.
-
-const
+  ##  The output reference is to a Objective-C CoreFoundation string.
   LLVMDisassemblerReferenceTypeOutObjcCFStringRef* = 4
 
-##  The output reference is to a Objective-C message.
-
-const
+  ##  The output reference is to a Objective-C message.
   LLVMDisassemblerReferenceTypeOutObjcMessage* = 5
 
-##  The output reference is to a Objective-C message ref.
-
-const
+  ##  The output reference is to a Objective-C message ref.
   LLVMDisassemblerReferenceTypeOutObjcMessageRef* = 6
 
-##  The output reference is to a Objective-C selector ref.
-
-const
+  ##  The output reference is to a Objective-C selector ref.
   LLVMDisassemblerReferenceTypeOutObjcSelectorRef* = 7
 
-##  The output reference is to a Objective-C class ref.
-
-const
+  ##  The output reference is to a Objective-C class ref.
   LLVMDisassemblerReferenceTypeOutObjcClassRef* = 8
 
-##  The output reference is to a C++ symbol name.
-
-const
+  ##  The output reference is to a C++ symbol name.
   LLVMDisassemblerReferenceTypeDeMangledName* = 9
 
-## *
 ##  Create a disassembler for the TripleName.  Symbolic disassembly is supported
 ##  by passing a block of information in the DisInfo parameter and specifying the
 ##  TagType and callback functions as described above.  These can all be passed
 ##  as NULL.  If successful, this returns a disassembler context.  If not, it
 ##  returns NULL. This function is equivalent to calling
 ##  LLVMCreateDisasmCPUFeatures() with an empty CPU name and feature set.
-##
-
 proc LLVMCreateDisasm*(tripleName: cstring; disInfo: pointer; tagType: cint;
                       getOpInfo: LLVMOpInfoCallback;
                       symbolLookUp: LLVMSymbolLookupCallback): LLVMDisasmContextRef
-## *
+
 ##  Create a disassembler for the TripleName and a specific CPU.  Symbolic
 ##  disassembly is supported by passing a block of information in the DisInfo
 ##  parameter and specifying the TagType and callback functions as described
 ##  above.  These can all be passed * as NULL.  If successful, this returns a
 ##  disassembler context.  If not, it returns NULL. This function is equivalent
 ##  to calling LLVMCreateDisasmCPUFeatures() with an empty feature set.
-##
-
 proc LLVMCreateDisasmCPU*(triple: cstring; cpu: cstring; disInfo: pointer;
                          tagType: cint; getOpInfo: LLVMOpInfoCallback;
                          symbolLookUp: LLVMSymbolLookupCallback): LLVMDisasmContextRef
-## *
+
 ##  Create a disassembler for the TripleName, a specific CPU and specific feature
 ##  string.  Symbolic disassembly is supported by passing a block of information
 ##  in the DisInfo parameter and specifying the TagType and callback functions as
 ##  described above.  These can all be passed * as NULL.  If successful, this
 ##  returns a disassembler context.  If not, it returns NULL.
-##
-
 proc LLVMCreateDisasmCPUFeatures*(triple: cstring; cpu: cstring; features: cstring;
                                  disInfo: pointer; tagType: cint;
                                  getOpInfo: LLVMOpInfoCallback;
                                  symbolLookUp: LLVMSymbolLookupCallback): LLVMDisasmContextRef
-## *
+
 ##  Set the disassembler's options.  Returns 1 if it can set the Options and 0
 ##  otherwise.
-##
-
 proc LLVMSetDisasmOptions*(dc: LLVMDisasmContextRef; options: uint64T): cint
-##  The option to produce marked up assembly.
+
 
 const
+  ##  The option to produce marked up assembly.
   LLVMDisassemblerOptionUseMarkup* = 1
 
-##  The option to print immediates as hex.
-
-const
+  ##  The option to print immediates as hex.
   LLVMDisassemblerOptionPrintImmHex* = 2
 
-##  The option use the other assembler printer variant
-
-const
+  ##  The option use the other assembler printer variant
   LLVMDisassemblerOptionAsmPrinterVariant* = 4
 
-##  The option to set comment on instructions
-
-const
+  ##  The option to set comment on instructions
   LLVMDisassemblerOptionSetInstrComments* = 8
 
-##  The option to print latency information alongside instructions
-
-const
+  ##  The option to print latency information alongside instructions
   LLVMDisassemblerOptionPrintLatency* = 16
 
-## *
 ##  Dispose of a disassembler context.
-##
-
 proc LLVMDisasmDispose*(dc: LLVMDisasmContextRef)
-## *
+
 ##  Disassemble a single instruction using the disassembler context specified in
 ##  the parameter DC.  The bytes of the instruction are specified in the
 ##  parameter Bytes, and contains at least BytesSize number of bytes.  The
@@ -242,11 +198,6 @@ proc LLVMDisasmDispose*(dc: LLVMDisasmContextRef)
 ##  OutString whose size is specified in the parameter OutStringSize.  This
 ##  function returns the number of bytes in the instruction or zero if there was
 ##  no valid instruction.
-##
-
 proc LLVMDisasmInstruction*(dc: LLVMDisasmContextRef; bytes: ptr uint8T;
                            bytesSize: uint64T; pc: uint64T; outString: cstring;
                            outStringSize: csize): csize
-## *
-##  @}
-##
