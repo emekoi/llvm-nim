@@ -1,21 +1,3 @@
-## ===-- llvm-c/TargetMachine.h - Target Machine Library C Interface - C++ -*-=*\
-## |*                                                                            *|
-## |*                     The LLVM Compiler Infrastructure                       *|
-## |*                                                                            *|
-## |* This file is distributed under the University of Illinois Open Source      *|
-## |* License. See LICENSE.TXT for details.                                      *|
-## |*                                                                            *|
-## |*===----------------------------------------------------------------------===*|
-## |*                                                                            *|
-## |* This header declares the C interface to the Target and TargetMachine       *|
-## |* classes, which can be used to generate assembly or object files.           *|
-## |*                                                                            *|
-## |* Many exotic languages can interoperate with C code but have a harder time  *|
-## |* with C++ due to name mangling. So in addition to C, this interface enables *|
-## |* tools written in such languages.                                           *|
-## |*                                                                            *|
-## \*===----------------------------------------------------------------------===
-
 import
   llvm-c/Target, llvm-c/Types
 

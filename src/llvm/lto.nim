@@ -207,272 +207,139 @@ proc ltoCodegenCompile*(cg: LtoCodeGenT; length: ptr csize): pointer
 ##  Generates code for all added modules into one native object file.
 ##  This calls lto_codegen_optimize then lto_codegen_compile_optimized (instead
 ##  of returning a generated mach-o/ELF buffer, it writes to a file).
-##
 ##  The name of the file is written to name. Returns true on error.
-##
-##  \since LTO_API_VERSION=5
-##
-
 proc ltoCodegenCompileToFile*(cg: LtoCodeGenT; name: cstringArray): LtoBoolT
-## *
-##  Runs optimization for the merged module. Returns true on error.
-##
-##  \since LTO_API_VERSION=12
-##
 
+##  Runs optimization for the merged module. Returns true on error.
 proc ltoCodegenOptimize*(cg: LtoCodeGenT): LtoBoolT
-## *
+
 ##  Generates code for the optimized merged module into one native object file.
 ##  It will not run any IR optimizations on the merged module.
-##
 ##  On success returns a pointer to a generated mach-o/ELF buffer and length set
 ##  to the buffer size.  The buffer is owned by the lto_code_gen_t and will be
 ##  freed when lto_codegen_dispose() is called, or
 ##  lto_codegen_compile_optimized() is called again. On failure, returns NULL
 ##  (check lto_get_error_message() for details).
-##
-##  \since LTO_API_VERSION=12
-##
-
 proc ltoCodegenCompileOptimized*(cg: LtoCodeGenT; length: ptr csize): pointer
-## *
+
 ##  Returns the runtime API version.
-##
-##  \since LTO_API_VERSION=12
-##
-
 proc ltoApiVersion*(): cuint
-## *
-##  Sets options to help debug codegen bugs.
-##
-##  \since prior to LTO_API_VERSION=3
-##
 
+##  Sets options to help debug codegen bugs.
 proc ltoCodegenDebugOptions*(cg: LtoCodeGenT; a3: cstring)
-## *
+
 ##  Initializes LLVM disassemblers.
 ##  FIXME: This doesn't really belong here.
-##
-##  \since LTO_API_VERSION=5
-##
-
 proc ltoInitializeDisassembler*()
-## *
+
 ##  Sets if we should run internalize pass during optimization and code
 ##  generation.
-##
-##  \since LTO_API_VERSION=14
-##
-
 proc ltoCodegenSetShouldInternalize*(cg: LtoCodeGenT; shouldInternalize: LtoBoolT)
-## *
-##  \brief Set whether to embed uselists in bitcode.
-##
+
 ##  Sets whether \a lto_codegen_write_merged_modules() should embed uselists in
 ##  output bitcode.  This should be turned on for all -save-temps output.
-##
-##  \since LTO_API_VERSION=15
-##
-
 proc ltoCodegenSetShouldEmbedUselists*(cg: LtoCodeGenT;
                                       shouldEmbedUselists: LtoBoolT)
-## *
-##  @} // endgoup LLVMCLTO
-##  @defgroup LLVMCTLTO ThinLTO
-##  @ingroup LLVMC
-##
-##  @{
-##
-## *
-##  Type to wrap a single object returned by ThinLTO.
-##
-##  \since LTO_API_VERSION=18
-##
 
 type
+  ##  Type to wrap a single object returned by ThinLTO.
   LTOObjectBuffer* {.bycopy.} = object
     buffer*: cstring
     size*: csize
 
-
-## *
 ##  Instantiates a ThinLTO code generator.
 ##  Returns NULL on error (check lto_get_error_message() for details).
-##
-##
 ##  The ThinLTOCodeGenerator is not intended to be reuse for multiple
 ##  compilation: the model is that the client adds modules to the generator and
 ##  ask to perform the ThinLTO optimizations / codegen, and finally destroys the
 ##  codegenerator.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCreateCodegen*(): ThinltoCodeGenT
-## *
+
 ##  Frees the generator and all memory it internally allocated.
 ##  Upon return the thinlto_code_gen_t is no longer valid.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenDispose*(cg: ThinltoCodeGenT)
-## *
+
 ##  Add a module to a ThinLTO code generator. Identifier has to be unique among
 ##  all the modules in a code generator. The data buffer stays owned by the
 ##  client, and is expected to be available for the entire lifetime of the
 ##  thinlto_code_gen_t it is added to.
-##
 ##  On failure, returns NULL (check lto_get_error_message() for details).
-##
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenAddModule*(cg: ThinltoCodeGenT; identifier: cstring;
                              data: cstring; length: cint)
-## *
+
 ##  Optimize and codegen all the modules added to the codegenerator using
 ##  ThinLTO. Resulting objects are accessible using thinlto_module_get_object().
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenProcess*(cg: ThinltoCodeGenT)
-## *
+
 ##  Returns the number of object files produced by the ThinLTO CodeGenerator.
-##
 ##  It usually matches the number of input files, but this is not a guarantee of
 ##  the API and may change in future implementation, so the client should not
 ##  assume it.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoModuleGetNumObjects*(cg: ThinltoCodeGenT): cuint
-## *
+
 ##  Returns a reference to the ith object file produced by the ThinLTO
 ##  CodeGenerator.
-##
 ##  Client should use \p thinlto_module_get_num_objects() to get the number of
 ##  available objects.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoModuleGetObject*(cg: ThinltoCodeGenT; index: cuint): LTOObjectBuffer
-## *
+
 ##  Returns the number of object files produced by the ThinLTO CodeGenerator.
-##
 ##  It usually matches the number of input files, but this is not a guarantee of
 ##  the API and may change in future implementation, so the client should not
 ##  assume it.
-##
-##  \since LTO_API_VERSION=21
-##
-
 proc thinltoModuleGetNumObjectFiles*(cg: ThinltoCodeGenT): cuint
-## *
+
 ##  Returns the path to the ith object file produced by the ThinLTO
 ##  CodeGenerator.
-##
 ##  Client should use \p thinlto_module_get_num_object_files() to get the number
 ##  of available objects.
-##
-##  \since LTO_API_VERSION=21
-##
-
 proc thinltoModuleGetObjectFile*(cg: ThinltoCodeGenT; index: cuint): cstring
-## *
+
 ##  Sets which PIC code model to generate.
 ##  Returns true on error (check lto_get_error_message() for details).
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetPicModel*(cg: ThinltoCodeGenT; a3: LtoCodegenModel): LtoBoolT
-## *
+
 ##  Sets the path to a directory to use as a storage for temporary bitcode files.
 ##  The intention is to make the bitcode files available for debugging at various
 ##  stage of the pipeline.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetSavetempsDir*(cg: ThinltoCodeGenT; saveTempsDir: cstring)
-## *
+
 ##  Set the path to a directory where to save generated object files. This
 ##  path can be used by a linker to request on-disk files instead of in-memory
 ##  buffers. When set, results are available through
 ##  thinlto_module_get_object_file() instead of thinlto_module_get_object().
-##
-##  \since LTO_API_VERSION=21
-##
-
 proc thinltoSetGeneratedObjectsDir*(cg: ThinltoCodeGenT; saveTempsDir: cstring)
-## *
-##  Sets the cpu to generate code for.
-##
-##  \since LTO_API_VERSION=18
-##
 
+##  Sets the cpu to generate code for.
 proc thinltoCodegenSetCpu*(cg: ThinltoCodeGenT; cpu: cstring)
-## *
+
 ##  Disable CodeGen, only run the stages till codegen and stop. The output will
 ##  be bitcode.
-##
-##  \since LTO_API_VERSION=19
-##
-
 proc thinltoCodegenDisableCodegen*(cg: ThinltoCodeGenT; disable: LtoBoolT)
-## *
+
 ##  Perform CodeGen only: disable all other stages.
-##
-##  \since LTO_API_VERSION=19
-##
-
 proc thinltoCodegenSetCodegenOnly*(cg: ThinltoCodeGenT; codegenOnly: LtoBoolT)
-## *
+
 ##  Parse -mllvm style debug options.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoDebugOptions*(options: cstringArray; number: cint)
-## *
-##  Test if a module has support for ThinLTO linking.
-##
-##  \since LTO_API_VERSION=18
-##
 
+##  Test if a module has support for ThinLTO linking.
 proc ltoModuleIsThinlto*(`mod`: LtoModuleT): LtoBoolT
-## *
+
 ##  Adds a symbol to the list of global symbols that must exist in the final
 ##  generated code. If a function is not listed there, it might be inlined into
 ##  every usage and optimized away. For every single module, the functions
 ##  referenced from code outside of the ThinLTO modules need to be added here.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenAddMustPreserveSymbol*(cg: ThinltoCodeGenT; name: cstring;
     length: cint)
-## *
+
 ##  Adds a symbol to the list of global symbols that are cross-referenced between
 ##  ThinLTO files. If the ThinLTO CodeGenerator can ensure that every
 ##  references from a ThinLTO module to this symbol is optimized away, then
 ##  the symbol can be discarded.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenAddCrossReferencedSymbol*(cg: ThinltoCodeGenT; name: cstring;
     length: cint)
-## *
-##  @} // endgoup LLVMCTLTO
-##  @defgroup LLVMCTLTO_CACHING ThinLTO Cache Control
-##  @ingroup LLVMCTLTO
-##
+
 ##  These entry points control the ThinLTO cache. The cache is intended to
 ##  support incremental build, and thus needs to be persistent accross build.
 ##  The client enabled the cache by supplying a path to an existing directory.
@@ -486,49 +353,26 @@ proc thinltoCodegenAddCrossReferencedSymbol*(cg: ThinltoCodeGenT; name: cstring;
 ##     entry needs to be to be removed.
 ##   - Finally, the garbage collector can be instructed to prune the cache till
 ##     the occupied space goes below a threshold.
-##  @{
-##
-## *
 ##  Sets the path to a directory to use as a cache storage for incremental build.
 ##  Setting this activates caching.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetCacheDir*(cg: ThinltoCodeGenT; cacheDir: cstring)
-## *
+
 ##  Sets the cache pruning interval (in seconds). A negative value disable the
 ##  pruning. An unspecified default value will be applied, and a value of 0 will
 ##  be ignored.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetCachePruningInterval*(cg: ThinltoCodeGenT; interval: cint)
-## *
+
 ##  Sets the maximum cache size that can be persistent across build, in terms of
 ##  percentage of the available space on the the disk. Set to 100 to indicate
 ##  no limit, 50 to indicate that the cache size will not be left over half the
 ##  available space. A value over 100 will be reduced to 100, a value of 0 will
 ##  be ignored. An unspecified default value will be applied.
-##
 ##  The formula looks like:
 ##   AvailableSpace = FreeSpace + ExistingCacheSize
 ##   NewCacheSize = AvailableSpace * P/100
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetFinalCacheSizeRelativeToAvailableSpace*(
     cg: ThinltoCodeGenT; percentage: cuint)
-## *
+
 ##  Sets the expiration (in seconds) for an entry in the cache. An unspecified
 ##  default value will be applied. A value of 0 will be ignored.
-##
-##  \since LTO_API_VERSION=18
-##
-
 proc thinltoCodegenSetCacheEntryExpiration*(cg: ThinltoCodeGenT; expiration: cuint)
-## *
-##  @} // endgroup LLVMCTLTO_CACHING
-##
