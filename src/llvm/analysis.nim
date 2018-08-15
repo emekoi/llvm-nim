@@ -1,23 +1,16 @@
-import types
+import Types
 
 type
-  LLVMVerifierFailureAction* = enum
-    LLVMAbortProcessAction,   ## verifier will print to stderr and abort()
-    LLVMPrintMessageAction,   ## verifier will print to stderr and return 1
-    LLVMReturnStatusAction    ## verifier will just return 1
+  LLVMVerifierFailureAction* {.size: sizeof(cint).} = enum
+    LLVMAbortProcessAction,
+    LLVMPrintMessageAction,
+    LLVMReturnStatusAction
 
-## Verifies that a module is valid, taking the specified action if not.
-## Optionally returns a human-readable description of any invalid constructs.
-## OutMessage must be disposed with LLVMDisposeMessage.
-proc LLVMVerifyModule*(m: LLVMModuleRef; action: LLVMVerifierFailureAction;
-                      outMessage: cstringArray): LLVMBool
+{.push cdecl, importc.}
 
-## Verifies that a single function is valid, taking the specified action.
-## Useful for debugging.
-proc LLVMVerifyFunction*(fn: LLVMValueRef; action: LLVMVerifierFailureAction): LLVMBool
+proc LLVMVerifyModule*(M: LLVMModuleRef; Action: LLVMVerifierFailureAction; OutMessage: cstringArray): bool
+proc LLVMVerifyFunction*(Fn: LLVMValueRef; Action: LLVMVerifierFailureAction): bool
+proc LLVMViewFunctionCFG*(Fn: LLVMValueRef)
+proc LLVMViewFunctionCFGOnly*(Fn: LLVMValueRef)
 
-## Open up a ghostview window that displays the CFG of the current function.
-## Useful for debugging.
-proc LLVMViewFunctionCFG*(fn: LLVMValueRef)
-
-proc LLVMViewFunctionCFGOnly*(fn: LLVMValueRef)
+{.pop.}

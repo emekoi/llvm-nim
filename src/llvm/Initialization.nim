@@ -1,26 +1,18 @@
-# import
-#   llvm-c/Types
+import Types
 
-proc LLVMInitializeCore*(r: LLVMPassRegistryRef)
+{.push cdecl, importc.}
 
-proc LLVMInitializeTransformUtils*(r: LLVMPassRegistryRef)
+proc LLVMInitializeCore*(R: LLVMPassRegistryRef)
+proc LLVMInitializeTransformUtils*(R: LLVMPassRegistryRef)
+proc LLVMInitializeScalarOpts*(R: LLVMPassRegistryRef)
+proc LLVMInitializeObjCARCOpts*(R: LLVMPassRegistryRef)
+proc LLVMInitializeVectorization*(R: LLVMPassRegistryRef)
+proc LLVMInitializeInstCombine*(R: LLVMPassRegistryRef)
+proc LLVMInitializeIPO*(R: LLVMPassRegistryRef)
+proc LLVMInitializeInstrumentation*(R: LLVMPassRegistryRef)
+proc LLVMInitializeAnalysis*(R: LLVMPassRegistryRef)
+proc LLVMInitializeIPA*(R: LLVMPassRegistryRef)
+proc LLVMInitializeCodeGen*(R: LLVMPassRegistryRef)
+proc LLVMInitializeTarget*(R: LLVMPassRegistryRef)
 
-proc LLVMInitializeScalarOpts*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeObjCARCOpts*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeVectorization*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeInstCombine*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeIPO*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeInstrumentation*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeAnalysis*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeIPA*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeCodeGen*(r: LLVMPassRegistryRef)
-
-proc LLVMInitializeTarget*(r: LLVMPassRegistryRef)
+{.pop.}
